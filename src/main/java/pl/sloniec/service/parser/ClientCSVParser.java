@@ -20,6 +20,29 @@ import java.util.stream.Collectors;
 @Component
 public class ClientCSVParser {
 
+    public List<Client> parse(MultipartFile file) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+             CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).setIgnoreHeaderCase(true).setTrim(true).build())) {
+            return csvParser.getRecords().stream()
+                    .map(this::toClient)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse CSV file: " + e.getMessage());
+        }
+    }
+
+    private Client toClient(CSVRecord csvRecord) {
+        return Client.builder()
+                .id(UUID.fromString(csvRecord.get(Headers.ID.getValue())))
+                .firstName(csvRecord.get(Headers.FIRST_NAME.getValue()))
+                .lastName(csvRecord.get(Headers.LAST_NAME.getValue()))
+                .email(csvRecord.get(Headers.EMAIL.getValue()))
+                .phone(csvRecord.get(Headers.PHONE.getValue()))
+                .gender(Gender.fromValue(csvRecord.get(Headers.GENDER.getValue())))
+                .banned(Boolean.valueOf(csvRecord.get(Headers.BANNED.getValue())))
+                .build();
+    }
+
     @RequiredArgsConstructor
     @Getter
     private enum Headers {
@@ -32,34 +55,5 @@ public class ClientCSVParser {
         BANNED("banned");
 
         private final String value;
-    }
-
-    public List<Client> parse(MultipartFile file) {
-
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
-             CSVParser csvParser = new CSVParser(fileReader,
-//                     CSVFormat.DEFAULT.withHeader().withSkipHeaderRecord().withIgnoreHeaderCase().withTrim()
-                     CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).setIgnoreHeaderCase(true).setTrim(true).build()
-             )
-        ) {
-            return csvParser.getRecords().stream()
-                    .map(this::toClient)
-                    .collect(Collectors.toList());
-
-        } catch (IOException e) {
-            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
-        }
-    }
-
-    private Client toClient(CSVRecord csvRecord) {
-        return Client.builder()
-                .id(UUID.fromString(csvRecord.get(Headers.ID.getValue())))
-                .firstName(csvRecord.get(Headers.FIRST_NAME.getValue()))
-                .lastName(csvRecord.get(Headers.LAST_NAME.getValue()))
-                .email(csvRecord.get(Headers.EMAIL.getValue()))
-                .phone(csvRecord.get(Headers.PHONE.getValue()))
-                .gender(Gender.valueOf(csvRecord.get(Headers.GENDER.getValue())))
-                .banned(Boolean.valueOf(csvRecord.get(Headers.BANNED.getValue())))
-                .build();
     }
 }
