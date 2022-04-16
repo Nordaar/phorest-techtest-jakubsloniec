@@ -11,28 +11,28 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.sloniec.domain.Client;
 import pl.sloniec.service.ClientService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController
+@RestController()
 @RequestMapping("/clients")
 public class ClientController {
 
     private final ClientService clientService;
 
     @GetMapping
-    public List<Client> all() {
+    public List<Client> getAll() {
         return clientService.findAll();
     }
 
     @PostMapping
-    public Client create(@RequestBody Client client) {
+    public Client create(@Valid @RequestBody Client client) {
         return clientService.create(client);
     }
 
     @PostMapping("/import")
     public void importClients(@RequestPart("file") MultipartFile file) {
-        clientService.create(file);
+        clientService.importFromCSV(file);
     }
-
 }

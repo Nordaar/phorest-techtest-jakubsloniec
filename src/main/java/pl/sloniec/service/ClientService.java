@@ -8,6 +8,7 @@ import pl.sloniec.repository.ClientRepository;
 import pl.sloniec.service.parser.ClientCSVParser;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -19,11 +20,15 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
+    public Client getById(UUID id) {
+        return clientRepository.getById(id);
+    }
+
     public Client create(Client client) {
         return clientRepository.save(client);
     }
 
-    public void create(MultipartFile file) {
+    public void importFromCSV(MultipartFile file) {
         List<Client> clients = clientCSVParser.parse(file);
         clientRepository.saveAll(clients);
     }
