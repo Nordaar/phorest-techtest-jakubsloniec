@@ -16,7 +16,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientCSVParser clientCSVParser;
 
-    public List<Client> findAll() {
+    public List<Client> getAll() {
         return clientRepository.findAll();
     }
 
@@ -26,6 +26,10 @@ public class ClientService {
 
     public Client create(Client client) {
         return clientRepository.save(client);
+    }
+
+    public void create(List<Client> clients) {
+        clientRepository.saveAll(clients);
     }
 
     public void importFromCSV(MultipartFile file) {

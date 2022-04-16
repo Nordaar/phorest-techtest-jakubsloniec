@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import pl.sloniec.controller.ClientsApiDelegate;
 import pl.sloniec.domain.Client;
 import pl.sloniec.dto.ClientDTO;
 import pl.sloniec.mapper.ClientMapper;
 import pl.sloniec.service.ClientService;
+import pl.sloniec.service.parser.ClientCSVParser;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -20,10 +22,11 @@ public class ClientsDelegate implements ClientsApiDelegate {
 
     private final ClientService clientService;
     private final ClientMapper clientMapper;
+    private final ClientCSVParser clientCSVParser;
 
     @Override
     public ResponseEntity<List<ClientDTO>> listClients() {
-        return ResponseEntity.ok(clientMapper.toDTO(clientService.findAll()));
+        return ResponseEntity.ok(clientMapper.toDTO(clientService.getAll()));
     }
 
     @Override
@@ -36,7 +39,6 @@ public class ClientsDelegate implements ClientsApiDelegate {
         }
     }
 
-
     @Override
     public ResponseEntity<ClientDTO> createClients(ClientDTO clientDTO) {
         Client client = clientService.create(clientMapper.fromDTO(clientDTO));
@@ -45,4 +47,11 @@ public class ClientsDelegate implements ClientsApiDelegate {
                 .body(clientMapper.toDTO(client));
     }
 
+    @Override
+    public ResponseEntity<Void> importClients(MultipartFile file) {
+        List<Client> clients = clientCSVParser.parse(file);
+        clientService.create(clients);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

@@ -68,6 +68,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /clients/import:
+    post:
+      summary: Import Clients CSV data
+      operationId: importClients
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Accepted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Client:
