@@ -10,7 +10,7 @@ import pl.sloniec.domain.Gender;
 import java.util.UUID;
 
 @Component
-public class ClientCSVParser extends AbstractCSVParser<Client> {
+public class ClientCSVParser extends CSVParser<Client> {
 
     @Override
     protected Client parse(CSVRecord csvRecord) {

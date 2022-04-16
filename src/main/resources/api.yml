@@ -1,0 +1,115 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: API
+  license:
+    name: MIT
+paths:
+  /clients:
+    get:
+      summary: List all clients
+      operationId: listClients
+      responses:
+        '200':
+          description: An array of clients
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Clients"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a client
+      operationId: createClients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        '201':
+          description: Null response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /clients/{clientId}:
+    get:
+      summary: Info for a specific client
+      operationId: showClientById
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: The id of the client to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Client:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+        - gender
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        gender:
+          $ref: "#/components/schemas/Gender"
+        banned:
+          type: boolean
+    Clients:
+      type: array
+      items:
+        $ref: "#/components/schemas/Client"
+    Gender:
+      enum:
+        - Male
+        - Female
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

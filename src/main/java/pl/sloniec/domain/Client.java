@@ -1,25 +1,20 @@
 package pl.sloniec.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+
+import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +25,7 @@ import java.util.UUID;
 public class Client {
 
     @Id
-    @GeneratedValue
+    @Column(columnDefinition = "UUID")
     private UUID id;
 
     @NotBlank
@@ -57,10 +52,10 @@ public class Client {
     @Column(nullable = false)
     private Boolean banned;
 
-    @JsonIgnore
-    @Builder.Default
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<Appointment> appointments = new ArrayList<>();
+    @PrePersist
+    protected void onCreate() {
+        if (isNull(this.id)) {
+            this.id = UUID.randomUUID();
+        }
+    }
 }
