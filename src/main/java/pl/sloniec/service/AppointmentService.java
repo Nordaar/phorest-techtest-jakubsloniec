@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.sloniec.domain.Appointment;
+import pl.sloniec.parser.AppointmentCSVParser;
 import pl.sloniec.repository.AppointmentRepository;
-import pl.sloniec.service.parser.AppointmentCSVParser;
 
 import java.util.List;
 import java.util.UUID;

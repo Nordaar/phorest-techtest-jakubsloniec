@@ -1,4 +1,4 @@
-package pl.sloniec.service.parser;
+package pl.sloniec.parser;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;

@@ -9,8 +9,8 @@ import pl.sloniec.controller.PurchasesApiDelegate;
 import pl.sloniec.domain.Purchase;
 import pl.sloniec.dto.PurchaseDTO;
 import pl.sloniec.mapper.PurchaseMapper;
+import pl.sloniec.parser.PurchaseCSVParser;
 import pl.sloniec.service.PurchaseService;
-import pl.sloniec.service.parser.PurchaseCSVParser;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

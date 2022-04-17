@@ -1,28 +1,26 @@
-package pl.sloniec.service.parser;
+package pl.sloniec.parser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
-import pl.sloniec.domain.Purchase;
+import pl.sloniec.domain.Appointment;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
-public class PurchaseCSVParser extends CSVParser<Purchase> {
+public class AppointmentCSVParser extends CSVParser<Appointment> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z");
 
-    protected Purchase parse(CSVRecord csvRecord) {
-        return Purchase.builder()
+    protected Appointment parse(CSVRecord csvRecord) {
+        return Appointment.builder()
                 .id(UUID.fromString(csvRecord.get(Headers.ID.getValue())))
-                .appointmentId(UUID.fromString(csvRecord.get(Headers.APPOINTMENT_ID.getValue())))
-                .name(csvRecord.get(Headers.NAME.getValue()))
-                .price(BigDecimal.valueOf(Double.parseDouble(csvRecord.get(Headers.PRICE.getValue()))))
-                .loyaltyPoints(Integer.valueOf(csvRecord.get(Headers.LOYALTY_POINTS.getValue())))
+                .clientId(UUID.fromString(csvRecord.get(Headers.CLIENT_ID.getValue())))
+                .startTime(parseDateTime(csvRecord.get(Headers.START_TIME.getValue())))
+                .endTime(parseDateTime(csvRecord.get(Headers.END_TIME.getValue())))
                 .build();
     }
 
@@ -30,10 +28,9 @@ public class PurchaseCSVParser extends CSVParser<Purchase> {
     @Getter
     private enum Headers {
         ID("id"),
-        APPOINTMENT_ID("appointment_id"),
-        NAME("name"),
-        PRICE("price"),
-        LOYALTY_POINTS("loyalty_points");
+        CLIENT_ID("client_id"),
+        START_TIME("start_time"),
+        END_TIME("end_time");
 
         private final String value;
     }

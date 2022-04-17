@@ -9,8 +9,8 @@ import pl.sloniec.controller.AppointmentsApiDelegate;
 import pl.sloniec.domain.Appointment;
 import pl.sloniec.dto.AppointmentDTO;
 import pl.sloniec.mapper.AppointmentMapper;
+import pl.sloniec.parser.AppointmentCSVParser;
 import pl.sloniec.service.AppointmentService;
-import pl.sloniec.service.parser.AppointmentCSVParser;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

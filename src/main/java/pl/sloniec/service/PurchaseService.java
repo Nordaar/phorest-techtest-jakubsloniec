@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.sloniec.domain.Purchase;
+import pl.sloniec.parser.PurchaseCSVParser;
 import pl.sloniec.repository.PurchaseRepository;
-import pl.sloniec.service.parser.PurchaseCSVParser;
 
 import java.util.List;
 import java.util.UUID;

@@ -9,8 +9,8 @@ import pl.sloniec.controller.ClientsApiDelegate;
 import pl.sloniec.domain.Client;
 import pl.sloniec.dto.ClientDTO;
 import pl.sloniec.mapper.ClientMapper;
+import pl.sloniec.parser.ClientCSVParser;
 import pl.sloniec.service.ClientService;
-import pl.sloniec.service.parser.ClientCSVParser;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

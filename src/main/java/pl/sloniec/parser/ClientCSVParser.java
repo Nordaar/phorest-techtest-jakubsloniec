@@ -1,4 +1,4 @@
-package pl.sloniec.service.parser;
+package pl.sloniec.parser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
