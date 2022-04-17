@@ -53,7 +53,7 @@ public class Appointment {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "appointment")
-    private List<Purchase> purchases;
+    private List<Product> products;
 
     @PrePersist
     protected void onCreate() {

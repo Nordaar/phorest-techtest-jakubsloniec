@@ -2,9 +2,7 @@ package pl.sloniec.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.sloniec.domain.Appointment;
-import pl.sloniec.parser.AppointmentCSVParser;
 import pl.sloniec.repository.AppointmentRepository;
 
 import java.util.List;
@@ -15,7 +13,6 @@ import java.util.UUID;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final AppointmentCSVParser appointmentCSVParser;
 
     public List<Appointment> findAll() {
         return appointmentRepository.findAll();
@@ -30,11 +27,6 @@ public class AppointmentService {
     }
 
     public void create(List<Appointment> appointments) {
-        appointmentRepository.saveAll(appointments);
-    }
-
-    public void importFromCSV(MultipartFile file) {
-        List<Appointment> appointments = appointmentCSVParser.parse(file);
         appointmentRepository.saveAll(appointments);
     }
 }

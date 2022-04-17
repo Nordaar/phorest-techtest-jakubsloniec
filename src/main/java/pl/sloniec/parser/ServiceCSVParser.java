@@ -6,9 +6,9 @@ import pl.sloniec.domain.ProductType;
 
 @RequiredArgsConstructor
 @Component
-public class PurchaseCSVParser extends ProductCSVParser {
+public class ServiceCSVParser extends ProductCSVParser {
     @Override
     protected ProductType getType() {
-        return ProductType.PURCHASE;
+        return ProductType.SERVICE;
     }
 }

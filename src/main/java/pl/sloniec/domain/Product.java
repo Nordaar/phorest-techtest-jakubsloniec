@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,7 +25,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table
-public class Purchase {
+public class Product {
 
     @Id
     @Column(columnDefinition = "UUID")
@@ -47,4 +49,9 @@ public class Purchase {
     @NotNull
     @Column(nullable = false)
     private Integer loyaltyPoints;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductType productType;
 }

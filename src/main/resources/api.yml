@@ -175,17 +175,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /purchases:
+  /products:
     get:
-      summary: List all purchases
-      operationId: listPurchases
+      summary: List all products
+      operationId: listProducts
       responses:
         '200':
-          description: An array of purchases
+          description: An array of products
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Purchases"
+                $ref: "#/components/schemas/Products"
         default:
           description: unexpected error
           content:
@@ -193,36 +193,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
-      summary: Create a purchase
-      operationId: createPurchase
+      summary: Create a product
+      operationId: createProduct
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Purchase"
+              $ref: "#/components/schemas/Product"
       responses:
         '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Purchase"
+                $ref: "#/components/schemas/Product"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /purchases/{purchaseId}:
+  /products/{productId}:
     get:
-      summary: Info for a specific purchase
-      operationId: showPurchaseById
+      summary: Info for a specific product
+      operationId: showProductById
       parameters:
-        - name: purchaseId
+        - name: productId
           in: path
           required: true
-          description: The id of the purchase to retrieve
+          description: The id of the product to retrieve
           schema:
             type: string
       responses:
@@ -231,14 +231,36 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Purchase"
+                $ref: "#/components/schemas/Product"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /purchases/import:
+  /products/importServices:
+    post:
+      summary: Import Services CSV data
+      operationId: importServices
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Accepted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /products/importPurchases:
     post:
       summary: Import Purchases CSV data
       operationId: importPurchases
@@ -317,12 +339,14 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Appointment"
-    Purchase:
+    Product:
       type: object
       required:
-        - clientId
-        - startTime
-        - endTime
+        - appointmentId
+        - name
+        - price
+        - loyaltyPoints
+        - type
       properties:
         id:
           type: string
@@ -337,10 +361,16 @@ components:
           format: double
         loyaltyPoints:
           type: integer
-    Purchases:
+        type:
+          $ref: "#/components/schemas/Product"
+    Products:
       type: array
       items:
-        $ref: "#/components/schemas/Purchase"
+        $ref: "#/components/schemas/Product"
+    ProductType:
+      enum:
+        - service
+        - purchase
     Error:
       type: object
       required:
