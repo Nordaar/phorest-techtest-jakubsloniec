@@ -175,6 +175,91 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /purchases:
+    get:
+      summary: List all purchases
+      operationId: listPurchases
+      responses:
+        '200':
+          description: An array of purchases
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purchases"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a purchase
+      operationId: createPurchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Purchase"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purchase"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /purchases/{purchaseId}:
+    get:
+      summary: Info for a specific purchase
+      operationId: showPurchaseById
+      parameters:
+        - name: purchaseId
+          in: path
+          required: true
+          description: The id of the purchase to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Purchase"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /purchases/import:
+    post:
+      summary: Import Purchases CSV data
+      operationId: importPurchases
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Accepted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Client:
@@ -232,6 +317,30 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Appointment"
+    Purchase:
+      type: object
+      required:
+        - clientId
+        - startTime
+        - endTime
+      properties:
+        id:
+          type: string
+          format: uuid
+        appointmentId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+        loyaltyPoints:
+          type: integer
+    Purchases:
+      type: array
+      items:
+        $ref: "#/components/schemas/Purchase"
     Error:
       type: object
       required:

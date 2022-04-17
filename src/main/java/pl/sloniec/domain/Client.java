@@ -3,7 +3,9 @@ package pl.sloniec.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,6 +59,8 @@ public class Client {
     @Column(nullable = false)
     private Boolean banned;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
