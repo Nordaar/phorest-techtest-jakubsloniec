@@ -7,15 +7,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -26,39 +25,26 @@ import static java.util.Objects.isNull;
 @Builder
 @Entity
 @Table
-public class Client {
+public class Appointment {
 
     @Id
     @Column(columnDefinition = "UUID")
     private UUID id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String firstName;
+    @JoinColumn(name = "client_id", insertable = false, updatable = false)
+    @ManyToOne(targetEntity = Client.class, fetch = FetchType.EAGER, optional = false)
+    private Client client;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String lastName;
-
-    @NotBlank
-    @Column(nullable = false)
-    private String email;
-
-    @NotBlank
-    @Column(nullable = false)
-    private String phone;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Gender gender;
+    @Column(name = "client_id", columnDefinition = "UUID")
+    private UUID clientId;
 
     @NotNull
     @Column(nullable = false)
-    private Boolean banned;
+    private OffsetDateTime startTime;
 
-    @OneToMany(mappedBy = "client")
-    private List<Appointment> appointments;
+    @NotNull
+    @Column(nullable = false)
+    private OffsetDateTime endTime;
 
     @PrePersist
     protected void onCreate() {

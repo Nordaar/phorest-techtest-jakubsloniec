@@ -33,7 +33,7 @@ paths:
               $ref: "#/components/schemas/Client"
       responses:
         '201':
-          description: Null response
+          description: Created
           content:
             application/json:
               schema:
@@ -90,6 +90,91 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /appointments:
+    get:
+      summary: List all appointments
+      operationId: listAppointments
+      responses:
+        '200':
+          description: An array of appointments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointments"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create an appointment
+      operationId: createAppointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /appointments/{appointmentId}:
+    get:
+      summary: Info for a specific appointment
+      operationId: showAppointmentById
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          description: The id of the appointment to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /appointments/import:
+    post:
+      summary: Import Appointments CSV data
+      operationId: importAppointments
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '202':
+          description: Accepted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Client:
@@ -124,6 +209,29 @@ components:
       enum:
         - Male
         - Female
+    Appointment:
+      type: object
+      required:
+        - clientId
+        - startTime
+        - endTime
+      properties:
+        id:
+          type: string
+          format: uuid
+        clientId:
+          type: string
+          format: uuid
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    Appointments:
+      type: array
+      items:
+        $ref: "#/components/schemas/Appointment"
     Error:
       type: object
       required:
