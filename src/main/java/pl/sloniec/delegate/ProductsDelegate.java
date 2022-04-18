@@ -13,7 +13,6 @@ import pl.sloniec.parser.PurchaseCSVParser;
 import pl.sloniec.parser.ServiceCSVParser;
 import pl.sloniec.service.ProductService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,21 +31,17 @@ public class ProductsDelegate implements ProductsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<ProductDTO> showProductById(String ProductId) {
-        try {
-            Product Product = productService.getById(UUID.fromString(ProductId));
-            return ResponseEntity.ok(productMapper.toDTO(Product));
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ProductDTO> showProductById(UUID productId) {
+        return productService.findById(productId)
+                .map(product -> ResponseEntity.ok(productMapper.toDTO(product)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public ResponseEntity<ProductDTO> createProduct(ProductDTO ProductDTO) {
-        Product product1 = productMapper.fromDTO(ProductDTO);
-        Product Product = productService.create(product1);
+    public ResponseEntity<ProductDTO> createProduct(ProductDTO productDTO) {
+        Product product = productService.create(productMapper.fromDTO(productDTO));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productMapper.toDTO(Product));
+                .body(productMapper.toDTO(product));
     }
 
     @Override
@@ -61,5 +56,17 @@ public class ProductsDelegate implements ProductsApiDelegate {
         List<Product> products = serviceCSVParser.parse(file);
         productService.create(products);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteProduct(UUID productId) {
+        productService.deleteById(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ProductDTO> updateProduct(UUID productId, ProductDTO productDTO) {
+        Product product = productService.upsert(productId, productMapper.fromDTO(productDTO));
+        return ResponseEntity.ok(productMapper.toDTO(product));
     }
 }

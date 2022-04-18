@@ -12,7 +12,6 @@ import pl.sloniec.mapper.AppointmentMapper;
 import pl.sloniec.parser.AppointmentCSVParser;
 import pl.sloniec.service.AppointmentService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,13 +29,10 @@ public class AppointmentsDelegate implements AppointmentsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<AppointmentDTO> showAppointmentById(String appointmentId) {
-        try {
-            Appointment appointment = appointmentService.getById(UUID.fromString(appointmentId));
-            return ResponseEntity.ok(appointmentMapper.toDTO(appointment));
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<AppointmentDTO> showAppointmentById(UUID appointmentId) {
+        return appointmentService.findById(appointmentId)
+                .map(appointment -> ResponseEntity.ok(appointmentMapper.toDTO(appointment)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -54,5 +50,4 @@ public class AppointmentsDelegate implements AppointmentsApiDelegate {
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
 }

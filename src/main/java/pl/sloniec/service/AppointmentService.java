@@ -6,6 +6,7 @@ import pl.sloniec.domain.Appointment;
 import pl.sloniec.repository.AppointmentRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -18,8 +19,8 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
-    public Appointment getById(UUID id) {
-        return appointmentRepository.getById(id);
+    public Optional<Appointment> findById(UUID id) {
+        return appointmentRepository.findById(id);
     }
 
     public Appointment create(Appointment appointment) {

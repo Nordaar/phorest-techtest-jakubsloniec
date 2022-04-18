@@ -12,7 +12,7 @@ import pl.sloniec.mapper.ClientMapper;
 import pl.sloniec.parser.ClientCSVParser;
 import pl.sloniec.service.ClientService;
 
-import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,13 +30,10 @@ public class ClientsDelegate implements ClientsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<ClientDTO> showClientById(String clientId) {
-        try {
-            Client client = clientService.getById(UUID.fromString(clientId));
-            return ResponseEntity.ok(clientMapper.toDTO(client));
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ClientDTO> showClientById(UUID clientId) {
+        return clientService.findById(clientId)
+                .map(client -> ResponseEntity.ok(clientMapper.toDTO(client)))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -53,5 +50,10 @@ public class ClientsDelegate implements ClientsApiDelegate {
         clientService.create(clients);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<List<ClientDTO>> listTopClients(Integer limit, LocalDate from) {
+        return ResponseEntity.ok(clientMapper.toDTO(clientService.getTopClients(limit, from)));
     }
 }
